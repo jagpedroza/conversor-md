@@ -2,76 +2,78 @@
 
 Converts course material into Markdown so it can be used as context for an LLM tutor.
 
-Supported inputs:
+## What it converts
 
-- HTML notebooks, including R Markdown notebooks rendered to HTML
-- PDF, DOCX, PPTX and XLSX files
-- ZIP archives (processed file by file, folder structure preserved)
+- **Convert to Markdown:** HTML notebooks (including R notebooks), PDF, DOCX, PPTX and XLSX.
+- **Copy unchanged:** any other file, such as `.Rmd`, `.csv` or `.txt`.
+- **Skip:** files such as `Table of Contents.html`.
 
-Files that are not converted (for example `.Rmd`, `.csv` or `.txt`) can be copied unchanged. Files such as `Table of Contents.html` can be skipped.
+ZIP files are processed file by file, and their folder structure is preserved.
 
 ## Repository structure
 
 ```
 .
-├── webapp/          Main app: web interface built with Gradio (start here)
-├── desktop/         Desktop scripts (Tkinter), same conversion logic, older
-├── versions/        Previous experiments, kept for reference
+├── webapp/          Main app (Gradio). Start here.
+├── desktop/         Desktop scripts (Tkinter), older version of the same conversion
+├── versions/        Earlier experiments, kept for reference
 │   └── streamlit/   Streamlit version: not tested, not maintained
 └── README.md
 ```
 
-## Web app (main)
-
-Located in `webapp/`.
-
-### Setup
+## Windows setup (webapp)
 
 Requires Python 3.13. Some dependencies do not yet provide packages for Python 3.14 or 3.15.
 
-```bash
-cd webapp
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
+Open PowerShell in the `webapp` folder:
 
+```powershell
+cd webapp
+py -3.13 -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Run
+## Run the webapp (Windows)
 
-```bash
+- **Double-click** `iniciar.bat` in the `webapp` folder, or
+- From PowerShell, with the environment active:
+
+```powershell
 python launcher.py
 ```
 
-This opens the app in your browser. On Windows you can also double-click `iniciar.bat`.
+The app opens in your browser at `http://127.0.0.1:7860`. Keep the console window open while you use it: closing it stops the app.
 
-### How to use
+## How to use the webapp
 
 1. **Choose files:** upload files or ZIPs.
-2. **Review actions:** each file gets a suggested action. Change it in the table if needed:
-   - `convert`: convert to Markdown
-   - `copy`: keep the file unchanged
-   - `skip`: leave it out
+2. **Review actions:** each file gets a suggested action. Change it in the table if needed.
 3. **Options:**
-   - *Include figures:* keep embedded images. Off by default, because a text-based tutor cannot see them.
-   - *Include code outputs:* keep R output blocks. Off by default, because the code is enough to teach the procedure.
+   - *Include figures:* keep embedded images. Off by default.
+   - *Include code outputs:* keep R output blocks. Off by default.
 4. **Process**, then **Download ZIP**.
 
 The ZIP contains the converted files, the copied files, and a `summary.txt` describing what happened to each file.
 
-### Notes
+## Notes
 
 - Each batch is limited to 20 MB. The limit is `MAX_BATCH_BYTES` in `converter_core.py`.
-- Files are processed in memory and the app does not store them. If you host the app on a third-party service, the uploads still travel to that service's servers.
-- R notebooks that embed their source are converted from that source, which keeps the `{r}` chunks runnable in RStudio.
+- Files are processed in memory and not stored by the app.
+- R notebooks with embedded source are converted from that source, so `{r}` chunks stay runnable in RStudio.
 
-## Desktop scripts
+## Desktop scripts (Windows)
 
-Located in `desktop/`. These are Tkinter applications with the same conversion logic, run with `python conversor_md.py` after installing `requirements.txt` in that folder.
+The scripts in `desktop/` are Tkinter applications.
 
-## Previous versions
+```powershell
+cd desktop
+py -3.13 -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python conversor_md.py
+```
 
-`versions/streamlit/` contains an earlier Streamlit version of the same app. It was not fully tested and is not maintained. Keep it only for reference.
+## Earlier versions
+
+`versions/streamlit/` contains an earlier Streamlit version of the same app. It was not fully tested and is not maintained.
